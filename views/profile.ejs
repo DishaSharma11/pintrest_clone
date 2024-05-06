@@ -1,7 +1,7 @@
 <% include ./partials/header.ejs %>
  
 <div class="profile w-full min-h-screen pt-1">
-    <form hidden action="/fileupload">
+    <form id="uploadform" hidden action="/fileupload" method="post" enctype="multipart/form-data">
         <input type="file" name="image">
     </form>
     <div class="profdets flex flex-col items-center mt-10">
@@ -10,7 +10,7 @@
                 <i class="ri-pencil-fill"></i>
             </span>
             <div class="w-32 h-32 bg-zinc-800 rounded-full overflow-hidden">
-                <img class="w-full h-full object-cover" src="https://i.pinimg.com/564x/bb/8a/91/bb8a91a047deaa78f7a89228f80d92da.jpg">
+                <img class="w-full h-full object-cover" src="/images/uploads/<%= user.profileImage %>">
             </div>
         </div>
         <h1 class="text-3xl font-semibold mt-5">Disha Sharma</h1>
@@ -33,6 +33,11 @@
 </div>
 
 <script>
-
+    document.querySelector("#uploadicon").addEventListener("click",function(){
+        document.querySelector('#uploadform input').click();
+    })
+    document.querySelector("#uploadform input").addEventListener("change",function(){
+        document.querySelector("#uploadform").submit();
+    })
 </script>
 <% include ./partials/footer.ejs %>
