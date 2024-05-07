@@ -5,6 +5,7 @@ const passport = require('passport');
 const localStrategy=require('passport-local');
 const upload = require('./multer');
 const axios = require('axios');
+const postModel=require("./post");
 
 passport.use(new localStrategy(userModel.authenticate()));
 router.get('/', function(req, res, next) {
@@ -14,7 +15,7 @@ router.get('/register', function(req, res, next) {
   res.render('register');
 });
 router.get('/profile',isLoggedIn, async function(req, res, next) {
-  const user=await userModel.findOne({username:req.session.passport.user});
+  const user=await userModel.findOne({username:req.session.passport.user}).populate("posts");
   res.render('profile',{user});
 });
 router.post('/register',function(req,res){
@@ -43,8 +44,21 @@ router.get("/logout",function(req,res,next){
     res.redirect("/");
   });
 })
-router.get('/add',(req,res)=>{
-  res.render('add');
+router.get('/add',isLoggedIn,async (req,res)=>{
+  const user=await userModel.findOne({username:req.session.passport.user});
+  res.render('add',{user});
+})
+router.post('/createpost',isLoggedIn,upload.single("postimage"), async function(req,res){
+  const user=await userModel.findOne({username:req.session.passport.user});
+  const post=await postModel.create({
+    user:user._id,
+    title:req.body.title,
+    description:req.body.description,
+    image:req.file.filename
+  });
+  user.posts.push(post._id);
+  await user.save();
+  res.redirect("/profile");
 })
 router.get('/feed', async (req, res) => {
   try {
