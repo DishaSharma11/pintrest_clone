@@ -4,6 +4,7 @@ const userModel=require("./users");
 const passport = require('passport');
 const localStrategy=require('passport-local');
 const upload = require('./multer');
+const axios = require('axios');
 
 passport.use(new localStrategy(userModel.authenticate()));
 router.get('/', function(req, res, next) {
@@ -42,6 +43,21 @@ router.get("/logout",function(req,res,next){
     res.redirect("/");
   });
 })
+router.get('/add',(req,res)=>{
+  res.render('add');
+})
+router.get('/feed', async (req, res) => {
+  try {
+    const response = await axios.get('https://api.unsplash.com/photos/random/?client_id=LQlW5hwSfX3MIRdCvt9wXIwG2pBWO94kqIC8VKtsoNM&count=28');
+    const imageData = response.data;
+    const imageUrls = imageData.map(image => image.urls.regular);
+    res.render('feed', { imageUrls });
+  } catch (error) {
+    console.error('Error fetching random images:', error);
+    res.status(500).send('Error fetching random images');
+  }
+});
+
 router.post('/fileupload',isLoggedIn,upload.single("image"),async function(req,res){
   const user=await userModel.findOne({username:req.session.passport.user});
   user.profileImage=req.file.filename;
