@@ -18,6 +18,10 @@ router.get('/profile',isLoggedIn, async function(req, res, next) {
   const user=await userModel.findOne({username:req.session.passport.user}).populate("posts");
   res.render('profile',{user});
 });
+router.get('/show/posts',isLoggedIn, async function(req, res, next) {
+  const user=await userModel.findOne({username:req.session.passport.user}).populate("posts");
+  res.render('show',{user});
+});
 router.post('/register',function(req,res){
   const data=new userModel({
     username:req.body.username,
@@ -60,12 +64,14 @@ router.post('/createpost',isLoggedIn,upload.single("postimage"), async function(
   await user.save();
   res.redirect("/profile");
 })
-router.get('/feed', async (req, res) => {
+router.get('/feed',isLoggedIn, async (req, res) => {
+  const user=await userModel.findOne({username:req.session.passport.user});
+  const posts=await postModel.find().populate("user");
   try {
     const response = await axios.get('https://api.unsplash.com/photos/random/?client_id=LQlW5hwSfX3MIRdCvt9wXIwG2pBWO94kqIC8VKtsoNM&count=28');
     const imageData = response.data;
     const imageUrls = imageData.map(image => image.urls.regular);
-    res.render('feed', { imageUrls });
+    res.render('feed', { imageUrls,user,posts });
   } catch (error) {
     console.error('Error fetching random images:', error);
     res.status(500).send('Error fetching random images');
