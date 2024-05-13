@@ -84,6 +84,22 @@ router.post('/fileupload',isLoggedIn,upload.single("image"),async function(req,r
   await user.save();
   res.redirect("/profile");
 })
+
+router.get('/edit', isLoggedIn, async (req, res) => {
+    const user = await userModel.findOne({ username: req.session.passport.user });
+    res.render('edit', { user });
+});
+
+router.post('/edit', isLoggedIn, async (req, res) => {
+    const user = await userModel.findOne({ username: req.session.passport.user });
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.contact = req.body.contact;
+    user.username=req.body.username;
+    await user.save();
+    res.redirect('/profile');
+});
+
 function isLoggedIn(req,res,next){
   if(req.isAuthenticated()){
     return next();
