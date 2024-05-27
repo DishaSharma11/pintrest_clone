@@ -22,7 +22,7 @@ router.get('/show/posts',isLoggedIn, async function(req, res, next) {
   const user=await userModel.findOne({username:req.session.passport.user}).populate("posts");
   res.render('show',{user});
 });
-router.post('/register',function(req,res){
+router.post('/register',async function(req,res){
   const data=new userModel({
     username:req.body.username,
     email:req.body.email,
@@ -35,6 +35,7 @@ router.post('/register',function(req,res){
       res.redirect("/profile");
     })
   })
+  
 })
 router.post('/login',passport.authenticate("local",{
   failureRedirect:"/",

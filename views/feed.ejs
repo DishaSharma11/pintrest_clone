@@ -1,4 +1,4 @@
-<% include ./partials/header.ejs %>
+<!-- <% include ./partials/header.ejs %>
 
     <div class="w-full px-10 py-3 flex justify-between">
         <div class="flex gap-2">
@@ -24,4 +24,33 @@
                                 <% } %>
     </div>
 
-    <% include ./partials/footer.ejs %>
+    <% include ./partials/footer.ejs %> -->
+    
+    <% include ./partials/header.ejs %>
+
+<div class="w-full px-4 md:px-10 py-3 flex flex-wrap justify-between items-center">
+  <div class="flex gap-2 items-center">
+    <img src="https://i.pinimg.com/736x/98/a6/de/98a6de54dc27442a3c8375ab303c6e42.jpg" class="w-10 h-10">
+    <p class="mt-2 font-semibold">Pinterest</p>
+  </div>
+  <div class="flex gap-4 md:gap-10 items-center mt-3 md:mt-0">
+    <a href="/profile">Profile</a>
+    <a href="/feed">Feed</a>
+    <a class="px-3 py-2 bg-red-600 text-white rounded-lg" href="/logout">Logout</a>
+  </div>
+</div>
+
+<div class="mt-10 flex justify-center flex-wrap">
+  <% posts.forEach(function(elem){ %>
+    <img class="w-full sm:w-48 md:w-64 h-48 sm:h-48 md:h-64 object-cover mr-2 md:mr-4 mb-2 md:mb-4" src="/images/uploads/<%= elem.image %>">
+  <% })%>
+  <% if(imageUrls && imageUrls.length > 0) { %>
+    <% imageUrls.forEach(imageUrl => { %>
+      <img src="<%= imageUrl %>" alt="Random Image" class="w-full sm:w-48 md:w-64 h-48 sm:h-48 md:h-64 object-cover mr-2 md:mr-4 mb-2 md:mb-4" />
+    <% }) %>
+  <% } else { %>
+    <p>Error loading images</p>
+  <% } %>
+</div>
+
+<% include ./partials/footer.ejs %>
